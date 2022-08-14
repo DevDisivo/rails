@@ -500,6 +500,10 @@ module ActiveRecord
           end
           attributes = attributes.with_indifferent_access
 
+          if association.target.count > target_records.count
+            target_records.merge! association.target[target_records.count..-1].index_by { |record| record.id.to_s }
+          end
+
           if attributes["id"].blank?
             unless reject_new_record?(association_name, attributes)
               association.reader.build(attributes.except(*UNASSIGNABLE_KEYS))
